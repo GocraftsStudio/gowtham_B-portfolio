@@ -728,7 +728,7 @@ export default function App() {
         <a href="#home" className="glass brand">Gowtham B</a>
         <div className="glass navLinks">
           <a href="#work">Work</a>
-          <a href="#screens">Screens</a>
+          <a href="#screens">Case studies</a>
           <a href="#process">Process</a>
           <a href="#experience">Experience</a>
           <a href="#contact">Contact</a>
@@ -749,9 +749,11 @@ export default function App() {
     e.currentTarget.style.setProperty("--y", `${y}px`);
   }}
 >
-  Designing product experiences that convert, guide & feel effortless.
+  I design user-focused digital products that improve conversion and reduce friction.
 </h1>
-          <p className="lead">I’m Gowtham B, a UI/UX & Product Designer focused on improving product usability, user flows, and conversion through research-driven design decisions.</p>
+          <p className="lead">I’m Gowtham B, A UI/UX & Product Designer with experience in optimizing user flows, usability, and business outcomes.</p>
+          <div className="actions"> 
+              <p className="lead">Focused on improving clarity, reducing drop-offs, and enhancing user experience.</p>
           <div className="actions">
             <a href="#work" className="btn btnPrimary">View Case Studies</a>
             <a href={RESUME_URL} target="_blank" rel="noreferrer" className="btn">Download Resume</a>
