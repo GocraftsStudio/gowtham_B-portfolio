@@ -1,0 +1,206 @@
+.bubbleSection {
+  position: relative;
+  min-height: 520px;
+  padding: 26px 20px 90px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(0, 191, 255, 0.16), transparent 30%),
+    radial-gradient(circle at 75% 40%, rgba(126, 87, 255, 0.18), transparent 35%);
+}
+
+.blueMarquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 18px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.blueTrack {
+  display: inline-flex;
+  width: max-content;
+  animation: blueScroll 22s linear infinite;
+}
+
+.blueTrack span {
+  font-family: "Bold", "Mileast", Italic;
+  font-size: clamp(20px, 6vw, 30px);
+  font-weight: 400;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  background: linear-gradient(
+    90deg,
+    #00d4ff,
+    #0077ff,
+    #6c63ff,
+    #00e5ff
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow:
+    0 0 18px rgba(0, 174, 255, 0.45),
+    0 0 38px rgba(99, 102, 241, 0.35);
+  filter: drop-shadow(0 0 14px rgba(0, 153, 255, 0.45));
+}
+
+@keyframes blueScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.realBubbleArea {
+  position: relative;
+  height: 360px;
+  margin-top: 34px;
+}
+
+.realBubble {
+  --pushX: 0px;
+  --pushY: 0px;
+
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  color: white;
+  font-family: "mileast", Italic;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+
+  background:
+  radial-gradient(circle at 35% 35%, rgba(0, 229, 255, .25), transparent 45%),
+  radial-gradient(circle at 75% 40%, rgba(168, 85, 247, .25), transparent 50%),
+  rgba(255, 255, 255, 0.06);
+
+  box-shadow:
+    inset -18px -18px 35px rgba(0, 55, 110, 0.28),
+    inset 18px 18px 35px rgba(255, 255, 255, 0.18),
+    0 20px 55px rgba(0, 174, 255, 0.22),
+    0 0 40px rgba(124, 92, 255, 0.2);
+
+  backdrop-filter: blur(16px);
+  transform: translate(var(--pushX), var(--pushY));
+  transition: transform 0.18s ease-out, opacity 0.25s ease;
+  animation: bubbleFloat 6s ease-in-out infinite;
+}
+
+.realBubble span {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+}
+.realBubble:hover {
+  box-shadow:
+    inset -18px -18px 35px rgba(0, 55, 110, 0.28),
+    inset 18px 18px 35px rgba(255, 255, 255, 0.2),
+    0 0 65px rgba(0, 212, 255, 0.45),
+    0 0 90px rgba(168, 85, 247, 0.3);
+}
+
+.realBubble.pop {
+  animation: bubblePop 0.20s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes bubblePop {
+  0% {
+    transform: translate(var(--pushX), var(--pushY)) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  70% {
+    transform: translate(var(--pushX), var(--pushY)) scale(1.45);
+    opacity: 0.45;
+    filter: blur(2px);
+  }
+  100% {
+    transform: translate(var(--pushX), var(--pushY)) scale(0);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    margin-top: 0;
+  }
+  50% {
+    margin-top: -18px;
+  }
+}
+
+.bubblePos1 {
+  left: 8%;
+  top: 50px;
+  animation-delay: 0s;
+}
+
+.bubblePos2 {
+  left: 25%;
+  top: 185px;
+  animation-delay: .6s;
+}
+
+.bubblePos3 {
+  left: 43%;
+  top: 75px;
+  animation-delay: 1.1s;
+}
+
+.bubblePos4 {
+  left: 60%;
+  top: 210px;
+  animation-delay: .3s;
+}
+
+.bubblePos5 {
+  left: 76%;
+  top: 55px;
+  animation-delay: 1.5s;
+}
+
+.bubblePos6 {
+  left: 86%;
+  top: 210px;
+  animation-delay: .9s;
+}
+
+@keyframes sparkleDrift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-120px);
+  }
+}
+
+@media (max-width: 900px) {
+  .bubbleSection {
+    min-height: 760px;
+  }
+
+  .realBubbleArea {
+    height: 600px;
+  }
+
+  .realBubble {
+    width: 125px;
+    height: 125px;
+    font-size: 13px;
+  }
+
+  .bubblePos1 { left: 8%; top: 40px; }
+  .bubblePos2 { left: 52%; top: 95px; }
+  .bubblePos3 { left: 14%; top: 235px; }
+  .bubblePos4 { left: 56%; top: 285px; }
+  .bubblePos5 { left: 12%; top: 440px; }
+  .bubblePos6 { left: 56%; top: 470px; }
+}

@@ -1,960 +1,860 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
 
-/* =============================
-   GOWTHAM B — FINAL PORTFOLIO
-   Paste this entire file in src/App.jsx
-   ============================= */
+/* ============================================================
+   GOWTHAM B — ULTRA PORTFOLIO 2026
+   Drop this in src/App.jsx and run:
+     npm install three @react-three/fiber @react-three/drei
+   ============================================================ */
 
-const RESUME_URL = "https://drive.google.com/"; // Replace with your real resume PDF link
+/* ───── constants ───── */
+const RESUME_URL = "https://drive.google.com/file/d/1vj1I6q04I_Om-QxgMgzbRx_Tzi9hEKRA/view?usp=drive_link";
 const LINKEDIN_URL = "http://www.linkedin.com/in/gowtham-boothal-84b672266";
 const EMAIL = "gowthamboothal22@gmail.com";
 const PHONE = "+916379148128";
+const PORTFOLIO = "gowtham.design";
 
 const IMAGE_URLS = {
   profile: "https://i.postimg.cc/X7Q2tJRf/profile-jpg.jpg",
   standing: "https://i.postimg.cc/YqZF4Bgb/IMG-20250824-WA0072-jpg.jpg",
   sunset: "https://i.postimg.cc/BQ65LCzq/sunset-jpg.jpg",
-  avatar: "https://i.postimg.cc/gkSDN7hJ/avatar-jpg.jpg",
   wipro: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg",
   unacademy: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Unacademy_Logo.png",
-  zero: "https://dummyimage.com/300x300/111827/ffffff&text=Zero+Schools",
   booking: [
-    "https://i.postimg.cc/VktsLdjz/booking1-jpg.jpg",
-    "https://i.postimg.cc/zGhDXVnv/booking2-jpg.jpg",
-    "https://i.postimg.cc/6pZ65ydT/booking3-jpg.jpg",
-    "https://i.postimg.cc/sgWfDvp2/booking4-jpg.jpg",
-    "https://i.postimg.cc/NjXGf51M/booking5-jpg.jpg",
+    "https://i.postimg.cc/rp7rp497/page1.png",
+    "https://i.postimg.cc/3RpD0wSJ/page2.png",
+    "https://i.postimg.cc/XJFyBvHd/page3.png",
+    "https://i.postimg.cc/tTPVngSs/page2-1.png",
+    "https://i.postimg.cc/qRnC67bc/page5.png",
+    "https://i.postimg.cc/NMTr20Jx/page6.png",
   ],
   neithal: [
-    "https://i.postimg.cc/VNYyQ648/neithal1-png.png",
+    "https://i.postimg.cc/bvJGgrs3/Screenshot-2026-05-05-233117.png",
     "https://i.postimg.cc/cJTpsS5Z/neithal2-png.png",
     "https://i.postimg.cc/q7QPkTZT/neithal3-png.png",
     "https://i.postimg.cc/7LXFxkQv/neithal4-png.png",
-    "https://i.postimg.cc/GpzWcCSb/neithal5-png.png",
   ],
   instagrocery: [
-    "https://i.postimg.cc/Dzm9yDVg/insta1-png.png",
-    "https://i.postimg.cc/PqNgrcGR/insta2-png.png",
-    "https://i.postimg.cc/nL56skZK/insta3-png.png",
+    "https://i.postimg.cc/XvjVczDC/Case-study.png",
+    "https://i.postimg.cc/zGSzhr77/1.png",
+    "https://i.postimg.cc/x1yfm2g9/2.png",
+    "https://i.postimg.cc/6pLWZXz6/3.png",
+    "https://i.postimg.cc/sg9jWrKj/4.png",
   ],
   urban: [
-    "https://i.postimg.cc/SKXPpM8W/urban1-png.png",
-    "https://i.postimg.cc/KYKWyMLJ/urban2-png.png",
-    "https://i.postimg.cc/W4DyPkrS/urban3-png.png",
+    "https://i.postimg.cc/cJVSCRb8/Page1.png",
+    "https://i.postimg.cc/NMmwHK35/Page2.png",
+    "https://i.postimg.cc/5tZVyBRz/Low-fidelity.png",
+    "https://i.postimg.cc/9fvh0dN6/Frame-1.png",
   ],
-  graphicDesign:[
-"https://i.postimg.cc/W1HPcjDM/1-1.png",
-"https://i.postimg.cc/ht5qRgJJ/2-1.png",
-"https://i.postimg.cc/fRrhQZ3v/2-2.png",
-"https://i.postimg.cc/13jZ1PgJ/3-1.png",
-"https://i.postimg.cc/qRfVgLxK/30-off-hair-botox-treatment-1.png",
-"https://i.postimg.cc/d1MPDBjL/4-1.png",
-"https://i.postimg.cc/kgpdP9Vw/4thwall-2-1.png",
-"https://i.postimg.cc/y8bzCBJQ/4thwall-3-1.png",
-"https://i.postimg.cc/nz8bMkGM/Annasie-01-1.png",
-"https://i.postimg.cc/SsW09MgP/Annasie-02-1.png",
-"https://i.postimg.cc/MHxCmpLd/Annasie-03-1.png",
-"https://i.postimg.cc/MKtSt1qV/Annasie-04.png",
-"https://i.postimg.cc/C5Y3sx2Q/Annasie-04-1.png",
-"https://i.postimg.cc/wvhKNmwV/Annasie-1-1.png",
-"https://i.postimg.cc/BbsrBnzm/Annasie-2-1.png",
-"https://i.postimg.cc/3RM5WBFN/Annasie-2-1.png",
-"https://i.postimg.cc/j2Kp4S1g/Annasie-3-1.png",
-"https://i.postimg.cc/8cD2mzYx/Children-s-Day-1.png",
-"https://i.postimg.cc/MHxCmpLN/final-poster-1.png",
-"https://i.postimg.cc/8cD2mz3N/Hopes-college-1-1.png",
-"https://i.postimg.cc/6qwkfpSX/Hopes-college-4-1.png",
-"https://i.postimg.cc/wMHCQjPT/Hopes-college-5-1.png",
-"https://i.postimg.cc/NFY3kjVM/Hopes-college-6.png",
-"https://i.postimg.cc/yxPwQz4s/image-2.png",
-"https://i.postimg.cc/T19Z7XM5/image-3.png",
-"https://i.postimg.cc/mkw0XGfg/image-4.png",
-"https://i.postimg.cc/90pv8j5t/image-5.png",
-"https://i.postimg.cc/4y5rLTkP/image-6.png",
-"https://i.postimg.cc/wMVSfd85/Leadsense-Media-poster-design-1.png",
-"https://i.postimg.cc/y6y4Y0gz/Leo-Bake-s-1.png",
-"https://i.postimg.cc/htjqYhGz/Mockup-1.png",
-"https://i.postimg.cc/cLHNz6JJ/Mockup-2.png",
-"https://i.postimg.cc/YC9wPjS4/Mockup-3.png",
-"https://i.postimg.cc/rwmLHzpm/Mockup-4.png",
-"https://i.postimg.cc/ryNXF50m/Next-Level-1.png",
-"https://i.postimg.cc/3rF5J24x/RC-1-1.png",
-"https://i.postimg.cc/bY9cN1Dd/RC-Poster-2-1.png",
-"https://i.postimg.cc/jdqVWCPD/RC-Poster-3-1.png",
-"https://i.postimg.cc/59SdN8YQ/Republic-(2)-1.png",
-"https://i.postimg.cc/G3xwhv8s/Republic-(4)-1.png",
-"https://i.postimg.cc/15Rxg4wN/Republic-Day-2-1.png",
-"https://i.postimg.cc/3JrMyWmg/Republic-day-poster-1-1.png",
-"https://i.postimg.cc/L64dqhLT/Republic-day-poster-2.png",
-"https://i.postimg.cc/m2ZxchCz/Republic-Day-poster-2-1.png",
-"https://i.postimg.cc/FsFtf13y/Republic-Day-poster-2-1.png",
-"https://i.postimg.cc/L64dqhLV/Republic-Day-poster-3-1.png",
-"https://i.postimg.cc/4NWDpZQ2/studio-11-poster-1-1.png",
-"https://i.postimg.cc/SNgBcqfv/Studio-11-poster-3-1.png",
-"https://i.postimg.cc/Hs6qbHtY/Valentine-S11-p2-1.png",
-"https://i.postimg.cc/Z501cgft/Valentine-wish-1.png",
-"https://i.postimg.cc/4xnr5M8T/Whats-App-Image-2026-01-24-at-11-43-16-PM-1.png",
-]
+  graphicDesign: [
+    "https://i.postimg.cc/W1HPcjDM/1-1.png",
+    "https://i.postimg.cc/ht5qRgJJ/2-1.png",
+    "https://i.postimg.cc/fRrhQZ3v/2-2.png",
+    "https://i.postimg.cc/13jZ1PgJ/3-1.png",
+    "https://i.postimg.cc/d1MPDBjL/4-1.png",
+    "https://i.postimg.cc/kgpdP9Vw/4thwall-2-1.png",
+    "https://i.postimg.cc/y8bzCBJQ/4thwall-3-1.png",
+    "https://i.postimg.cc/nz8bMkGM/Annasie-01-1.png",
+    "https://i.postimg.cc/SsW09MgP/Annasie-02-1.png",
+    "https://i.postimg.cc/MHxCmpLd/Annasie-03-1.png",
+    "https://i.postimg.cc/wvhKNmwV/Annasie-1-1.png",
+    "https://i.postimg.cc/BbsrBnzm/Annasie-2-1.png",
+    "https://i.postimg.cc/j2Kp4S1g/Annasie-3-1.png",
+    "https://i.postimg.cc/8cD2mzYx/Children-s-Day-1.png",
+    "https://i.postimg.cc/ryNXF50m/Next-Level-1.png",
+    "https://i.postimg.cc/3rF5J24x/RC-1-1.png",
+    "https://i.postimg.cc/bY9cN1Dd/RC-Poster-2-1.png",
+    "https://i.postimg.cc/jdqVWCPD/RC-Poster-3-1.png",
+    "https://i.postimg.cc/htjqYhGz/Mockup-1.png",
+    "https://i.postimg.cc/cLHNz6JJ/Mockup-2.png",
+    "https://i.postimg.cc/YC9wPjS4/Mockup-3.png",
+    "https://i.postimg.cc/rwmLHzpm/Mockup-4.png",
+  ],
+  /* ─── PRODUCT DESIGN / URBAN GEAR images ─── */
+  products: [
+    { label: "Insulated Mug", img: "https://i.postimg.cc/X7Q2tJRf/profile-jpg.jpg", realImg: "Mug_package.png", thumb: "https://i.postimg.cc/htjqYhGz/Mockup-1.png" },
+  ],
 };
 
-const projects = [
+/* ─── HOW TO USE YOUR LOCAL PRODUCT IMAGES ──────────────────────
+   1. Copy all uploaded product images into  src/assets/
+   2. Then replace the fallback URLs below with:
+        import mugImg from "./assets/Mug_package.png"; etc.
+      or use dynamic import: new URL("./assets/Mug_package.png", import.meta.url).href
+   For now they fall back gracefully to placeholder cards.
+   ──────────────────────────────────────────────────────────── */
+const PRODUCT_IMGS = {
+  mug:         "/src/assets/Mug_package.png",
+  flipper1:    "/src/assets/Flipper_Bottle_catalog.png",
+  flipper2:    "/src/assets/Flipper_bottle_Blue_Package.png",
+  lunch1:      "/src/assets/Lunch_box_package_2.png",
+  lunch2:      "/src/assets/Lunck_BOX_package.png",
+  speakerBlack:"/src/assets/Speaker_catalog_black.png",
+  speakerWhite:"/src/assets/Speaker_catalog_White.png",
+  bag:         "/src/assets/bag.png",
+  bagCatalog:  "/src/assets/Bag_catalog.png",
+  headphone:   "/src/assets/Headphone_catalog.png",
+  bottle:      "/src/assets/bottle.jpg",
+};
+
+/* Projects */
+const PROJECTS = [
   {
-    id: "01",
-    title: "Booking.com",
-    type: "Payment Flow Optimization",
-    desc: "Optimized travel booking screens to improve cost visibility, CTA clarity, and checkout confidence.",
-    tags: ["Web UX", "Task Walkthrough", "Conversion UX"],
-    accent: "#0071c2",
+    id: "01", title: "Booking.com", type: "Payment Flow Optimization",
+    desc: "Optimized travel booking screens to improve cost visibility, CTA clarity, and checkout confidence. Checkout completion lifted from 60% to 90%.",
+    tags: ["Web UX", "Conversion UX", "Task Walkthrough"],
+    accent: "#0071c2", accentRgb: "0,113,194",
     images: IMAGE_URLS.booking,
-    figma: "https://www.figma.com/proto/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=482-4342&viewport=321%2C-11%2C0.04&t=yaWHkbWfEW8KwlfW-1&scaling=scale-down&content-scaling=fixed&page-id=478%3A987",
-    problem: "Users were confused by lack of cost visibility and weak CTA hierarchy during booking.",
-    solution: "Introduced clearer visual grouping, stronger CTA hierarchy, and persistent price summary thinking.",
-    impact: "Improved booking completion clarity from 60% → 90%."
+    figma: "https://www.figma.com/proto/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=482-4342",
+    problem: "Users abandoned checkout due to poor pricing visibility and unclear CTA hierarchy.",
+    solution: "Persistent price summary panel + stronger visual hierarchy throughout payment journey.",
+    impact: "Checkout completion rate lifted from 60 % → 90 %.",
   },
   {
-    id: "02",
-    title: "Neithal",
-    type: "Seafood Delivery App",
-    desc: "A Tamil-inspired seafood delivery app focused on freshness, trust, ordering flow, tracking, and post-order support.",
-    tags: ["Mobile App", "Design System", "Service UX"],
-    accent: "#ff8a00",
+    id: "02", title: "DOODH", type: "Milk Subscription App",
+    desc: "End-to-end UX for a daily milk delivery platform — onboarding, subscription plans, schedule management, pause/resume, and transparent billing.",
+    tags: ["Mobile App", "Design System", "Subscription UX"],
+    accent: "#2f7d32", accentRgb: "47,125,50",
+    images: [
+      "https://i.postimg.cc/bvJGgrs3/Screenshot-2026-05-05-233117.png",
+      "https://i.postimg.cc/cJTpsS5Z/neithal2-png.png",
+      "https://i.postimg.cc/q7QPkTZT/neithal3-png.png",
+    ],
+    figma: "#",
+    problem: "Managing milk delivery schedules, pausing during holidays, and tracking payments was complicated in existing apps.",
+    solution: "Designed clean onboarding, flexible subscription tiers, DhoodCoins rewards, and a one-tap pause/resume flow.",
+    impact: "30+ screens covering all edge cases — a complete, trustworthy milk-delivery experience.",
+  },
+  {
+    id: "03", title: "Neithal", type: "Seafood Delivery App",
+    desc: "Tamil-inspired seafood delivery app focused on freshness trust, live order tracking, and post-order support.",
+    tags: ["Mobile App", "Service UX", "Design System"],
+    accent: "#ff8a00", accentRgb: "255,138,0",
     images: IMAGE_URLS.neithal,
-    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=656-628&t=uwSFZzWE2rkL3bNG-1",
-    problem: "Users struggle to trust seafood freshness, delivery reliability, and restaurant/product quality online.",
-    solution: "Built browse, cart, tracking, driver communication, cancellation, and location management screens.",
-    impact: "Created a complete end-to-end seafood ordering experience."
+    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=656-628",
+    problem: "Users couldn't trust seafood freshness or delivery reliability when ordering online.",
+    solution: "Built freshness indicators, delivery slot management, driver comms, and trust-building UI patterns.",
+    impact: "Complete end-to-end seafood ordering experience shipped.",
   },
   {
-    id: "03",
-    title: "InstaGrocery",
-    type: "Social Commerce Grocery App",
-    desc: "A grocery concept where users discover products through familiar social-media style interactions and buy faster.",
+    id: "04", title: "InstaGrocery", type: "Social Commerce Grocery App",
+    desc: "Feed-style grocery discovery that collapses complex category hierarchies into intuitive social-media-like browsing.",
     tags: ["Social Commerce", "Mobile UX", "Product Discovery"],
-    accent: "#ff304f",
+    accent: "#ff304f", accentRgb: "255,48,79",
     images: IMAGE_URLS.instagrocery,
-    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=489-8191&t=uwSFZzWE2rkL3bNG-1",
-    problem: "Deep category structures made grocery discovery slow and less engaging.",
-    solution: "Simplified hierarchy from 4 levels to 2 levels and created feed-based product discovery.",
-    impact: "Reduced product discovery time from 22s → 9s."
+    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=489-8191",
+    problem: "Deep 4-level category tree made grocery discovery slow and cognitively heavy.",
+    solution: "Simplified to 2-level navigation + social feed-based product discovery.",
+    impact: "Product discovery time cut from 22 s → 9 s.",
   },
   {
-    id: "04",
-    title: "Urban Company",
-    type: "Checkout Redesign",
-    desc: "A service checkout redesign focused on reducing friction, improving hierarchy, and simplifying completion.",
+    id: "05", title: "Urban Company", type: "Checkout Redesign",
+    desc: "Service checkout redesign that collapsed a multi-step flow into a single, confidence-building screen.",
     tags: ["Heuristic Evaluation", "Checkout UX", "Usability Testing"],
-    accent: "#7c5cff",
+    accent: "#7c5cff", accentRgb: "124,92,255",
     images: IMAGE_URLS.urban,
-    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=124-312&t=uwSFZzWE2rkL3bNG-1",
-    problem: "Users dropped off because checkout had multiple steps and high cognitive load.",
-    solution: "Merged shipping and payment into a cleaner single-flow checkout with better hierarchy.",
-    impact: "Reduced checkout completion time by 35%."
-  }
+    figma: "https://www.figma.com/design/cWyEeTr2NMsnmVWUXHNWC2/Projects?node-id=124-312",
+    problem: "Multi-step checkout caused cognitive overload and high drop-off.",
+    solution: "Merged shipping + payment into a unified checkout screen with clearer hierarchy.",
+    impact: "Checkout completion time reduced by 35 %.",
+  },
 ];
 
-const skills = [
-  'skill1',
-  'skill2',
-  'graphicDesign',
-  'UX Research', 'UI Design', 'Product Design', 'Wireframing', 'Prototyping', 'Figma', 'Design Systems', 'Usability Testing', 'Interaction Design', 'Information Architecture', 'Adobe XD', 'Photoshop', 'Illustrator', 'Miro', 'Responsive Design', 'Accessibility'
+const SKILLS = [
+  { cat: "Research", items: ["User Interviews", "Journey Mapping", "Persona Creation", "Card Sorting", "Usability Testing", "Heuristic Evaluation"] },
+  { cat: "Design", items: ["Wireframing", "Prototyping", "Design Systems", "Interaction Design", "Accessibility (WCAG)", "Responsive Design"] },
+  { cat: "Tools", items: ["Figma", "Adobe XD", "Photoshop", "Illustrator", "Miro", "Hotjar"] },
+  { cat: "AI", items: ["ChatGPT", "Claude", "Midjourney", "Adobe Firefly", "Canva AI", "Cursor"] },
 ];
 
-const process = [
-  ["01", "Discover", "Understand users, business goals, pain points, task flows, and friction before designing screens."],
-  ["02", "Define", "Turn findings into problem statements, IA, journeys, user flows, and design goals."],
-  ["03", "Design", "Create wireframes, high-fidelity screens, prototypes, and scalable components."],
-  ["04", "Validate", "Test usability, refine interactions, reduce friction, and improve completion confidence."]
-];
+/* ╔══════════════════════════════════════════════════════╗
+   ║  PARTICLE CANVAS  — hero background                 ║
+   ╚══════════════════════════════════════════════════════╝ */
+function ParticleCanvas() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const canvas = ref.current;
+    const ctx = canvas.getContext("2d");
+    let raf;
+    const W = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    W();
+    window.addEventListener("resize", W);
 
-function SafeImage({ src, alt, className = "" }) {
-  const fallback = "https://dummyimage.com/1000x700/111827/ffffff&text=Image+Not+Loaded";
-  return <img src={src || fallback} alt={alt} className={className} onError={(e) => { e.currentTarget.src = fallback; }} />;
+    const COUNT = 120;
+    const pts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 1.5 + 0.5,
+    }));
+
+    const COLORS = ["rgba(139,92,246,", "rgba(99,179,237,", "rgba(251,191,36,"];
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pts.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+        const col = COLORS[i % COLORS.length];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = col + "0.7)";
+        ctx.fill();
+        pts.forEach((q, j) => {
+          if (j <= i) return;
+          const dx = p.x - q.x, dy = p.y - q.y;
+          const d = Math.sqrt(dx * dx + dy * dy);
+          if (d < 110) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = col + (0.08 * (1 - d / 110)) + ")";
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        });
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", W); };
+  }, []);
+  return <canvas ref={ref} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: 0.55 }} />;
 }
 
-function ImageStack({ project }) {
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    setActive(0);
-  }, [project.title]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActive((v) => (v + 1) % project.images.length);
-    }, 2500);
-    return () => clearInterval(timer);
-  }, [project]);
+/* ╔══════════════════════════════════════════════════════╗
+   ║  3D PRODUCT VIEWER (pure canvas, no npm dep)        ║
+   ╚══════════════════════════════════════════════════════╝ */
+function Model({ path }) {
+  const { scene } = useGLTF(path);
 
   return (
-    <div className="imageStack">
-      <div className="imageGlow" style={{ background: `radial-gradient(circle, ${project.accent}55, transparent 55%)` }} />
-      <SafeImage src={project.images[active]} alt={`${project.title} preview`} className="previewImage" />
-      <div className="dots">
-        {project.images.map((_, i) => (
-          <button key={i} onClick={() => setActive(i)} className={i === active ? "dot active" : "dot"} aria-label={`Show ${project.title} image ${i + 1}`} />
+    <primitive
+      object={scene}
+      scale={1.5}
+      position={[0, -1, 0]}
+    />
+  );
+}
+
+function Product3DViewer({ modelPath }) {
+  return (
+    <div style={{ width: "100%", height: "100%" }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <ambientLight intensity={2} />
+        <directionalLight position={[5, 5, 5]} intensity={2} />
+
+        <Model path={modelPath} />
+
+        <OrbitControls
+          enableZoom
+          autoRotate
+          autoRotateSpeed={2}
+        />
+
+        <Environment preset="city" />
+      </Canvas>
+
+      <p
+        style={{
+          textAlign: "center",
+          marginTop: 8,
+          fontSize: 12,
+          color: "rgba(255,255,255,0.5)"
+        }}
+      >
+        ↔ Drag to rotate
+      </p>
+    </div>
+  );
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  SCROLL REVEAL WRAPPER                              ║
+   ╚══════════════════════════════════════════════════════╝ */
+function Reveal({ children, delay = 0, dir = "up" }) {
+  const ref = useRef(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true); }, { threshold: 0.12 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  const translate = dir === "up" ? "translateY(36px)" : dir === "left" ? "translateX(-36px)" : "translateX(36px)";
+  return (
+    <div ref={ref} style={{ transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`, opacity: vis ? 1 : 0, transform: vis ? "none" : translate }}>
+      {children}
+    </div>
+  );
+}
+
+/* ╔══════════════════════════════════════════════════════╗
+   ║  IMAGE CAROUSEL                                     ║
+   ╚══════════════════════════════════════════════════════╝ */
+function ImageCarousel({ images, accent }) {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => { setIdx(0); }, [images]);
+  useEffect(() => {
+    const t = setInterval(() => setIdx(v => (v + 1) % images.length), 2200);
+    return () => clearInterval(t);
+  }, [images.length]);
+  return (
+    <div style={{ position: "relative", width: "100%", borderRadius: 20, overflow: "hidden", background: "#0a0b10", minHeight: 320 }}>
+      <div style={{ position: "absolute", inset: 0, background: `radial-gradient(circle at 70% 30%, rgba(${accent ?? "139,92,246"},0.25), transparent 60%)` }} />
+      <img
+        src={images[idx]}
+        alt="project"
+        onError={e => e.currentTarget.src = "https://dummyimage.com/640x400/111/fff&text=Preview"}
+        style={{ width: "100%", height: 320, objectFit: "contain", display: "block", transition: "opacity 0.4s", padding: 12 }}
+      />
+      <div style={{ position: "absolute", bottom: 12, left: 0, right: 0, display: "flex", gap: 6, justifyContent: "center" }}>
+        {images.map((_, i) => (
+          <button key={i} onClick={() => setIdx(i)}
+            style={{ width: i === idx ? 20 : 8, height: 8, borderRadius: 4, background: i === idx ? `#${accent ?? "8b5cf6"}` : "rgba(255,255,255,0.25)", border: "none", cursor: "pointer", padding: 0, transition: "width 0.3s" }} />
         ))}
       </div>
     </div>
   );
 }
 
+/* ╔══════════════════════════════════════════════════════╗
+   ║  MAIN APP                                           ║
+   ╚══════════════════════════════════════════════════════╝ */
 export default function App() {
-  const [selected, setSelected] = useState(projects[0]);
-  const [mouse, setMouse] = useState({ x: 0, y: 0 });
-  const allImages = useMemo(() => IMAGE_URLS.graphicDesign, []);
+  const [activeProject, setActiveProject] = useState(PROJECTS[0]);
   const [posterPreview, setPosterPreview] = useState(null);
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [navOpen, setNavOpen] = useState(false);
+  const [activeProduct, setActiveProduct] = useState(0);
+  const heroRef = useRef(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  /* Products for 3D viewer */
+const PRODUCT_CARDS = [
+  {
+    label: "Insulated Mug",
+    model: "/models/mug.glb",
+    accent: "#c084fc",
+    desc: "Premium Insulated Mug · Urban Gear"
+  },
+  {
+    label: "Flipper Bottle",
+    model: "/models/bottle.glb",
+    accent: "#38bdf8",
+    desc: "Tritan Sports Bottle · Urban Gear"
+  },
+  {
+    label: "Meal Pro",
+    model: "/models/mealpro.glb",
+    accent: "#fbbf24",
+    desc: "Lunch Box with Bottle · Urban Gear"
+  },
+  {
+    label: "Tango Speaker",
+    model: "/models/speaker.glb",
+    accent: "#34d399",
+    desc: "BT Speaker · Urban Gear"
+  }
+];;
 
   useEffect(() => {
-    const move = (e) => {
-      setMouse({ x: e.clientX, y: e.clientY });
-      document.documentElement.style.setProperty("--mx", `${e.clientX}px`);
-      document.documentElement.style.setProperty("--my", `${e.clientY}px`);
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) entry.target.classList.add("show");
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-    window.addEventListener("mousemove", move, { passive: true });
-
+    const onMouse = (e) => setMouse({ x: e.clientX, y: e.clientY });
+    const onScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("mousemove", onMouse, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.removeEventListener("mousemove", move);
-      observer.disconnect();
+      window.removeEventListener("mousemove", onMouse);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
+  /* ─── global styles ─── */
+  const G = `
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:#06070e;color:#fff;font-family:'Inter',ui-sans-serif,system-ui,sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
+    button{font:inherit;cursor:pointer;border:none;background:none}
+    img{display:block;max-width:100%}
+
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-track{background:#06070e}
+    ::-webkit-scrollbar-thumb{background:linear-gradient(#8b5cf6,#3b82f6);border-radius:99px}
+
+    /* reveal handled inline */
+
+    /* Poster train */
+    .pTrain{overflow:hidden;mask-image:linear-gradient(90deg,transparent,black 8%,black 92%,transparent)}
+    .pTrack{display:flex;gap:12px;width:max-content;animation:trainScroll 38s linear infinite}
+    .pTrain:hover .pTrack{animation-play-state:paused}
+    @keyframes trainScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .pCard{flex-shrink:0;width:180px;height:240px;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.3s,box-shadow 0.3s}
+    .pCard:hover{transform:translateY(-6px) scale(1.04);box-shadow:0 16px 40px rgba(139,92,246,0.4)}
+    .pCard img{width:100%;height:100%;object-fit:cover}
+
+    /* Skills pill */
+    .skillPill{display:inline-block;padding:7px 16px;border-radius:999px;font-size:13px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);transition:all 0.25s;color:rgba(255,255,255,0.8)}
+    .skillPill:hover{background:rgba(139,92,246,0.2);border-color:rgba(139,92,246,0.5);color:#fff;transform:translateY(-2px)}
+
+    /* Nav link */
+    .nLink{padding:7px 14px;border-radius:999px;font-size:14px;color:rgba(255,255,255,0.7);transition:all 0.25s}
+    .nLink:hover{color:#ffd166;background:rgba(255,209,102,0.10);box-shadow:0 0 14px rgba(255,209,102,0.2)}
+
+    /* Glass */
+    .glass{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.13);backdrop-filter:blur(18px)}
+
+    /* Kicker */
+    .kicker{color:#ffd166;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.3em}
+
+    /* Section pad */
+    .sec{padding:120px 0}
+    .con{max-width:1200px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+    @media(max-width:768px){
+      .heroGrid{grid-template-columns:1fr !important}
+      .projGrid{grid-template-columns:1fr !important}
+      .aboutGrid{grid-template-columns:1fr !important}
+      .expGrid{grid-template-columns:1fr !important}
+      .productGrid{grid-template-columns:1fr 1fr !important}
+      .product3d{height:280px !important}
+    }
+  `;
+
   return (
-    <main>
-      <style>{`
-        * { box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-          margin: 0;
-          background: #05060a;
-          color: #fff;
-          font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-        a { color: inherit; text-decoration: none; }
-        button { font: inherit; }
-        img { display: block; }
+    <>
+      <style>{G}</style>
+      <ParticleCanvas />
 
-        main {
-          min-height: 100vh;
-          overflow: hidden;
-          background:
-            radial-gradient(circle at var(--mx, 50%) var(--my, 20%), rgba(255, 209, 102, .12), transparent 18%),
-            radial-gradient(circle at 15% 20%, rgba(0, 113, 194, .16), transparent 24%),
-            radial-gradient(circle at 85% 25%, rgba(124, 92, 255, .18), transparent 22%),
-            #05060a;
-        }
-        main::before {
-          content: "";
-          position: fixed;
-          inset: 0;
-          pointer-events: none;
-          background-image:
-            linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
-          background-size: 44px 44px;
-          mask-image: radial-gradient(circle at center, black 0%, transparent 78%);
-          z-index: 0;
-        }
-          /* SECTION */
-.glowSection {
-  position: relative;
-  padding: 100px 0;
-  overflow: hidden;
-}
+      {/* cursor glow */}
+      <div style={{ position: "fixed", left: mouse.x, top: mouse.y, width: 200, height: 200, borderRadius: "50%", transform: "translate(-50%,-50%)", background: "radial-gradient(circle,rgba(139,92,246,0.18),rgba(59,130,246,0.12) 45%,transparent 70%)", pointerEvents: "none", filter: "blur(6px)", zIndex: 1, transition: "left 0.05s,top 0.05s" }} />
+      <div style={{ position: "fixed", left: mouse.x, top: mouse.y, width: 20, height: 20, borderRadius: "50%", transform: "translate(-50%,-50%)", border: "1.5px solid rgba(255,255,255,0.7)", pointerEvents: "none", zIndex: 1000, mixBlendMode: "difference" }} />
 
-/* HEADING */
-.glowHeading {
-  text-align: center;
-  font-size: 48px;
-  margin-bottom: 40px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #fff, #8ab4ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* TRAIN */
-.glowTrain {
-  overflow: hidden;
-}
-
-.glowTrack {
-  display: flex;
-  gap: 30px;
-  width: max-content;
-  animation: glowScroll 25s linear infinite;
-}
-
-.glowTrain:hover .glowTrack {
-  animation-play-state: paused;
-}
-
-@keyframes glowScroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-/* CARD */
-.glowCard {
-  width: 260px;
-  height: 180px;
-  padding: 20px;
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.15);
-  position: relative;
-  overflow: hidden;
-  transition: 0.4s;
-}
-
-/* GLOW EFFECT */
-.glowCard::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  background: radial-gradient(circle at bottom right, #8a2be2, #00bfff, transparent);
-  filter: blur(40px);
-  opacity: 0.5;
-  z-index: 0;
-}
-
-.glowCard h3,
-.glowCard p {
-  position: relative;
-  z-index: 2;
-  color: white;
-}
-
-.glowCard h3 {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
-.glowCard p {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-/* HOVER */
-.glowCard:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 40px rgba(138,43,226,0.4);
-}
-
-/* STARS BACKGROUND */
-.stars {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: transparent url("https://www.transparenttextures.com/patterns/stardust.png");
-  opacity: 0.3;
-  top: 0;
-  left: 0;
-}
-        .cursorGlow {
-          position: fixed;
-          left: ${mouse.x}px;
-          top: ${mouse.y}px;
-          width: 110px;
-          height: 110px;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          background: radial-gradient(circle, rgba(255,209,102,.28), rgba(0,113,194,.16) 45%, transparent 70%);
-          pointer-events: none;
-          filter: blur(4px);
-          z-index: 2;
-        }
-        .cursorRing {
-          position: fixed;
-          left: ${mouse.x}px;
-          top: ${mouse.y}px;
-          width: 26px;
-          height: 26px;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          border: 1px solid rgba(255,255,255,.75);
-          pointer-events: none;
-          z-index: 999;
-        }
-
-        .container { position: relative; z-index: 3; max-width: 1180px; margin: 0 auto; padding: 0 24px; }
-        .glass { background: rgba(255,255,255,.065); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(18px); }
-        .headline { letter-spacing: -0.07em; color: #fff; }
-        h1, h2, h3, h4, h5, h6 { color: #fff; }
-        p { margin: 0; }
-        .muted { color: rgba(255,255,255,.68); line-height: 1.75; }
-        .kicker { color: #ffd166; font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: .35em; }
-
-        .nav {
-          position: fixed;
-          z-index: 50;
-          top: 18px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: min(1180px, calc(100% - 32px));
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 16px;
-        }
-        .brand, .navLinks {
-          border-radius: 999px;
-          padding: 12px 18px;
-        }
-        .brand { font-weight: 900; }
-        .navLinks { display: flex; gap: 18px; color: rgba(255,255,255,.72); }
-        .navLinks a {
-  position: relative;
-  padding: 8px 14px;
-  border-radius: 999px;
-  transition: all 0.3s ease;
-  color: rgba(255,255,255,0.7);
-}
-
-.navLinks a:hover {
-  color: #ffd166;
-  border: 1px solid rgba(255, 209, 102, 0.6);
-  background: rgba(255, 209, 102, 0.08);
-  box-shadow: 0 0 12px rgba(255, 209, 102, 0.25);
-}
-
-        .hero {
-          min-height: 100vh;
-          display: grid;
-          grid-template-columns: 1.05fr .95fr;
-          gap: 48px;
-          align-items: center;
-          padding-top: 100px;
-        }
-        .pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          width: max-content;
-          max-width: 100%;
-          border: 1px solid rgba(255,209,102,.34);
-          background: rgba(255,209,102,.10);
-          color: #ffe7a3;
-          padding: 9px 15px;
-          border-radius: 999px;
-          font-size: 14px;
-          font-weight: 700;
-        }
-        .pillDot { width: 8px; height: 8px; border-radius: 999px; background: #ffd166; }
-        h1 {
-          margin: 28px 0 0;
-          font-size: clamp(54px, 7vw, 110px);
-          line-height: .88;
-          font-weight: 950;
-          color: #fff;
-        }
-        .lead {
-          margin-top: 28px;
-          max-width: 670px;
-          color: rgba(255,255,255,.75);
-          font-size: 20px;
-          line-height: 1.7;
-        }
-        .actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 14px;
-          margin-top: 34px;
-        }
-        .btn {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 14px 22px;
-          min-height: 48px;
-          border-radius: 999px;
-          font-weight: 850;
-          font-size: 14px;
-          text-decoration: none;
-          border: 1px solid rgba(255,255,255,.18);
-          background: rgba(255,255,255,.08);
-          color: #fff;
-          transition: transform .22s ease, background .22s ease, border-color .22s ease;
-          cursor: pointer;
-        }
-        .btn:hover { transform: translateY(-2px); background: rgba(255,255,255,.14); border-color: rgba(255,209,102,.45); }
-        .btnPrimary { background: #fff; color: #05060a; border-color: #fff; }
-        .btnPrimary:hover { background: #ffd166; border-color: #ffd166; }
-
-        .profileCard {
-          position: relative;
-          min-height: 620px;
-          overflow: hidden;
-          border-radius: 34px;
-          animation: float 5s ease-in-out infinite;
-        }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        .profileImageWrap {
-          position: absolute;
-          inset: 16px;
-          border-radius: 28px;
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,.14);
-        }
-        .profileImageWrap img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-        .profileImageWrap::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.82), rgba(0,0,0,.06) 55%); }
-        .snapshot {
-          position: absolute;
-          left: 24px;
-          right: 24px;
-          bottom: 24px;
-          z-index: 3;
-          border: 1px solid rgba(255,255,255,.16);
-          background: rgba(0,0,0,.62);
-          backdrop-filter: blur(18px);
-          border-radius: 24px;
-          padding: 22px;
-        }
-        .avatar { width: 72px; height: 72px; object-fit: cover; border-radius: 18px; border: 1px solid rgba(255,255,255,.15); }
-
-        .marqueeWrap { position: relative; z-index: 3; overflow: hidden; border-block: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.03); padding: 22px 0; }
-        .marquee { display: flex; width: max-content; animation: marquee 30s linear infinite; font-size: clamp(32px, 5vw, 64px); font-weight: 950; text-transform: uppercase; color: rgba(255,255,255,.75); }
-        .marquee span { margin: 0 26px; white-space: nowrap; }
-        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        .section { padding: 110px 0; }
-        .sectionHead { display: flex; justify-content: space-between; align-items: end; gap: 28px; margin-bottom: 46px; }
-        h2 { margin: 12px 0 0; font-size: clamp(44px, 6vw, 76px); line-height: .92; font-weight: 950; }
-
-        .projectGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-        .projectCard { border-radius: 32px; padding: 20px; overflow: hidden; transition: .3s ease; }
-        .projectCard:hover { border-color: rgba(255,209,102,.65); background: rgba(255,255,255,.09); box-shadow: 0 0 36px rgba(255,209,102,.14), 0 26px 70px rgba(0,0,0,.35); }
-        .projectImg { position: relative; height: 320px; border-radius: 24px; overflow: hidden; background: #111827; border: 1px solid rgba(255,255,255,.1); }
-        .projectImg img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
-        .projectCard:hover .projectImg img { transform: scale(1.06); }
-        .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.86), transparent); }
-        .projectTitle { position: absolute; left: 22px; right: 22px; bottom: 22px; }
-        .projectTitle h3 { margin: 10px 0 0; font-size: 42px; line-height: .95; font-weight: 950; }
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-        .tag { border-radius: 999px; background: rgba(255,255,255,.08); color: rgba(255,255,255,.76); padding: 8px 12px; font-size: 12px; }
-        .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px; }
-        .miniTitle { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .2em; margin-bottom: 8px; }
-
-        .screensGrid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 32px; align-items: stretch; }
-        .infoCard { border-radius: 32px; padding: 30px; }
-        .imageStack { position: relative; min-height: 520px; border-radius: 32px; border: 1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.4); overflow: hidden; display: grid; place-items: center; padding: 24px; }
-        .imageGlow { position: absolute; inset: -20%; opacity: .28; filter: blur(12px); }
-        .previewImage { position: relative; z-index: 2; width: 100%; height: 100%; max-height: 470px; object-fit: contain; border-radius: 20px; box-shadow: 0 22px 60px rgba(0,0,0,.55); }
-        .dots { position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 8px; z-index: 5; }
-        .dot { width: 10px; height: 10px; border: 0; border-radius: 999px; background: rgba(255,255,255,.35); padding: 0; cursor: pointer; }
-        .dot.active { width: 32px; background: #fff; }
-
-        .trainWrap { position: relative; z-index: 3; overflow: hidden; border-block: 1px solid rgba(255,255,255,.1); padding: 38px 0; }
-        .screenTrain { display: flex; width: max-content; gap: 20px; animation: train 26s linear infinite; }
-        .trainImg { width: 210px; height: 285px; object-fit: cover; border-radius: 24px; border: 1px solid rgba(255,255,255,.1); background: #111827; }
-        @keyframes train { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        .processGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 54px; }
-        .processCard, .expCard { border-radius: 30px; padding: 28px; }
-        .aboutGrid, .experienceGrid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 28px; }
-        .portrait { width: 100%; height: 520px; object-fit: cover; border-radius: 24px; }
-        .mood { width: 100%; height: 260px; object-fit: cover; border-radius: 24px; }
-        .companyLogo { width: 48px; height: 48px; border-radius: 14px; object-fit: contain; background: #fff; padding: 7px; flex: 0 0 auto; }
-        .expTop { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
-        .expName { display: flex; align-items: center; gap: 16px; }
-        .expName h3 { margin: 0; font-size: 24px; font-weight: 950; }
-
-        footer { position: relative; z-index: 3; text-align: center; border-top: 1px solid rgba(255,255,255,.1); padding: 100px 24px; }
-        footer h2 { max-width: 900px; margin: 14px auto 0; }
-        .reveal { opacity: 0; transform: translateY(34px); transition: .85s ease; }
-        .reveal.show { opacity: 1; transform: translateY(0); }
-        /* ===== Graphic Scroll ===== */
-.posterTrain {
-  margin-top: 40px;
-  overflow-x: auto;
-  cursor: grab;
-}
-
-.posterTrain::-webkit-scrollbar {
-  display: none;
-}
-
-.posterTrack {
-  display: flex;
-  gap: 20px;
-  width: max-content;
-  animation: scroll 30s linear infinite;
-}
-
-.posterTrain:hover .posterTrack {
-  animation-play-state: paused;
-}
-
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-.posterCard {
-  width: 230px;
-  height: 320px;
-  border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.05);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.posterCard:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 30px rgba(255,209,102,.3);
-}
-
-.posterCard img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* MODAL */
-.posterModal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.8);
-  display: grid;
-  place-items: center;
-  z-index: 9999;
-}
-
-.previewBox {
-  position: relative;
-  width: min(500px, 90vw);
-  height: min(700px, 85vh);
-  border-radius: 30px;
-  padding: 10px;
-  background: #0b0f12;
-  border: 2px solid #ffd166;
-  box-shadow: 0 0 40px rgba(255,209,102,.3);
-}
-
-.previewBox img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  border-radius: 20px;
-}
-
-.closeBtn {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #ffd166;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-}
-.graphic-card:hover {
-  transform: scale(1.05);
-}
-
-        @media (max-width: 900px) {
-          .cursorGlow, .cursorRing { display: none; }
-          .navLinks { display: none; }
-          .hero, .projectGrid, .screensGrid, .aboutGrid, .experienceGrid { grid-template-columns: 1fr; }
-          .sectionHead { display: block; }
-          .processGrid, .three { grid-template-columns: 1fr; }
-          .profileCard { min-height: 520px; }
-        }
-          /* ===== Cursor Spotlight Text Effect ===== */
-.hero-title {
-  position: relative;
-  font-weight: 800;
-  font-size: clamp(32px, 6vw, 90px);
-  line-height: 1.1;
-
-  /* dim base */
-  color: rgba(40, 44, 134, 0.41);
-
-  /* spotlight gradient */
-  background: radial-gradient(
-    circle 120px at var(--x, 50%) var(--y, 50%),
-    #ffffff 20%,
-    #ffd166 40%,
-    rgba(255,255,255,0.1) 70%
-  );
-
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  transition: background 0.1s ease;
-  .hero-title {
-  position: relative;
-  font-weight: 800;
-  font-size: clamp(32px, 6vw, 90px);
-  line-height: 1.1;
-
-  /* dim base */
-  color: rgba(104, 91, 187, 0.42);
-
-  /* spotlight */
-  background: radial-gradient(
-    circle 120px at var(--x, 50%) var(--y, 50%),
-    #ffffff 0%,
-    #ffd166 40%,
-    rgba(210, 35, 35, 0.1) 70%
-  );
-
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-
-  transition: background 0.1s ease;
-}
-}
-      `}</style>
-
-      <div className="cursorGlow" />
-      <div className="cursorRing" />
-
-      <nav className="nav">
-        <a href="#home" className="glass brand">Gowtham B</a>
-        <div className="glass navLinks">
-          <a href="#work">Work</a>
-          <a href="#screens">Screens</a>
-          <a href="#process">Process</a>
-          <a href="#experience">Experience</a>
-          <a href="#contact">Contact</a>
+      {/* ── NAV ── */}
+      <nav style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", width: "min(1200px,calc(100% - 24px))", zIndex: 200, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px", borderRadius: 999, background: "rgba(6,7,14,0.75)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(24px)" }}>
+        <span style={{ fontWeight: 900, fontSize: 16, letterSpacing: "-0.03em" }}>
+          <span style={{ background: "linear-gradient(135deg,#8b5cf6,#3b82f6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>G</span>owtham B
+        </span>
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {[["#work", "Work"], ["#products", "Products"], ["#about", "About"], ["#contact", "Contact"]].map(([h, l]) => (
+            <a key={h} href={h} className="nLink">{l}</a>
+          ))}
+          <a href={RESUME_URL} target="_blank" rel="noreferrer" style={{ marginLeft: 8, padding: "7px 18px", borderRadius: 999, background: "linear-gradient(135deg,#8b5cf6,#6366f1)", color: "#fff", fontSize: 14, fontWeight: 600, transition: "opacity 0.2s" }}>Resume ↗</a>
         </div>
       </nav>
 
-      <section id="home" className="container hero reveal">
-        <div>
-          <div className="pill"><span className="pillDot" /> UI/UX Designer • Product Designer • Conversion UX</div>
-          <h1
-  className="hero-title"
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+      {/* ═══════════════════════════════ HERO ═══════════════════════════════ */}
+      <section ref={heroRef} style={{ minHeight: "100vh", display: "flex", alignItems: "center", position: "relative", overflow: "hidden" }}>
+        {/* ambient orbs */}
+        <div style={{ position: "absolute", top: "10%", left: "5%", width: 500, height: 500, background: "radial-gradient(circle,rgba(139,92,246,0.18),transparent 65%)", borderRadius: "50%", filter: "blur(60px)", pointerEvents: "none", transform: `translate(${scrollY * 0.04}px,${scrollY * 0.02}px)` }} />
+        <div style={{ position: "absolute", top: "30%", right: "5%", width: 400, height: 400, background: "radial-gradient(circle,rgba(59,130,246,0.15),transparent 65%)", borderRadius: "50%", filter: "blur(60px)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "10%", left: "40%", width: 300, height: 300, background: "radial-gradient(circle,rgba(251,191,36,0.12),transparent 65%)", borderRadius: "50%", filter: "blur(50px)", pointerEvents: "none" }} />
 
-    e.currentTarget.style.setProperty("--x", `${x}px`);
-    e.currentTarget.style.setProperty("--y", `${y}px`);
-  }}
->
-  Designing product experiences that convert, guide & feel effortless.
-</h1>
-          <p className="lead">I’m Gowtham B, a UI/UX & Product Designer focused on improving product usability, user flows, and conversion through research-driven design decisions.</p>
-          <div className="actions">
-            <a href="#work" className="btn btnPrimary">View Case Studies</a>
-            <a href={RESUME_URL} target="_blank" rel="noreferrer" className="btn">Download Resume</a>
-            <a href={`mailto:${EMAIL}`} className="btn">Contact Me</a>
-          </div>
-        </div>
-
-        <div className="glass profileCard">
-          <div className="profileImageWrap">
-            <SafeImage src={IMAGE_URLS.profile} alt="Gowtham B profile" />
-          </div>
-          <div className="snapshot">
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 16, alignItems: "center" }}>
-              <div>
-                <p className="kicker">Portfolio Snapshot</p>
-                <p style={{ marginTop: 8, fontSize: 26, fontWeight: 950 }}>4 product case studies</p>
-                <p className="muted" style={{ marginTop: 4 }}>Booking.com • Neithal • InstaGrocery • Urban Company</p>
-              </div>
-              <SafeImage src={IMAGE_URLS.avatar} alt="Creative avatar" className="avatar" />
+        <div className="con" style={{ width: "100%", paddingTop: 80 }}>
+          <div className="heroGrid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center", minHeight: "85vh" }}>
+            {/* left */}
+            <div>
+              <Reveal>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 999, background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.4)", marginBottom: 32 }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px #22c55e", display: "inline-block" }} />
+                  <span style={{ fontSize: 13, color: "rgba(255,255,255,0.8)" }}>Available for new roles — Bengaluru, India</span>
+                </div>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <h1 style={{ fontSize: "clamp(2.4rem,6vw,5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05, marginBottom: 8 }}>
+                  Gowtham B
+                </h1>
+                <h2 style={{ fontSize: "clamp(1.1rem,2.5vw,1.8rem)", fontWeight: 400, color: "rgba(255,255,255,0.55)", letterSpacing: "-0.02em", marginBottom: 24 }}>
+                  AI Product Designer &nbsp;·&nbsp; UI/UX Designer
+                </h2>
+              </Reveal>
+              <Reveal delay={0.2}>
+                <p style={{ fontSize: 16, lineHeight: 1.8, color: "rgba(255,255,255,0.65)", maxWidth: 520, marginBottom: 40 }}>
+                  Designing intelligent, user-centred digital products through UX research, product thinking, AI-powered experiences, and scalable design systems. Currently at <span style={{ color: "#fff" }}>Unacademy</span>.
+                </p>
+              </Reveal>
+              <Reveal delay={0.3}>
+                <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+                  <a href="#work" style={{ padding: "14px 28px", borderRadius: 999, background: "linear-gradient(135deg,#8b5cf6,#6366f1)", color: "#fff", fontWeight: 700, fontSize: 15, boxShadow: "0 8px 32px rgba(139,92,246,0.5)", transition: "transform 0.2s,box-shadow 0.2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(139,92,246,0.65)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = "0 8px 32px rgba(139,92,246,0.5)"; }}>
+                    View My Work ↓
+                  </a>
+                  <a href={`mailto:${EMAIL}`} style={{ padding: "14px 28px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 15, transition: "border-color 0.2s,background 0.2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#8b5cf6"; e.currentTarget.style.background = "rgba(139,92,246,0.1)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.background = "transparent"; }}>
+                    Let's Talk
+                  </a>
+                </div>
+              </Reveal>
+              <Reveal delay={0.45}>
+                <div style={{ marginTop: 48, display: "flex", gap: 32 }}>
+                  {[["60→90%", "Checkout lift"], ["22s→9s", "Discovery speed"], ["30%", "Support reduction"]].map(([v, l]) => (
+                    <div key={l}>
+                      <div style={{ fontSize: "1.5rem", fontWeight: 900, background: "linear-gradient(135deg,#fbbf24,#f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{v}</div>
+                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 2 }}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <div className="marqueeWrap">
-        <div className="marquee">{[...skills, ...skills].map((skill, i) => <span key={`${skill}-${i}`}>{skill}</span>)}</div>
-      </div>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"></link>
-      <section id="work" className="container section reveal">
-        <div className="sectionHead">
-          <div>
-            <p className="kicker">Selected Work</p>
-            <h2 className="headline">Real screens. Clear UX impact.</h2>
-            <section className="glowSection">
-  <div className="stars"></div>
-
-  <h2 className="glowHeading">My Skills & Strengths</h2>
-
-  <div className="glowTrain">
-    <div className="glowTrack">
-
-      {[
-        "Design Systems",
-        "Usability Testing",
-        "UX Research",
-        "Wireframing",
-        "Prototyping",
-        "Interaction Design",
-        "Visual Design"
-      ].map((text, i) => (
-        <div key={i} className="glowCard">
-          <h3>{text}</h3>
-          <p>Crafting clean, modern, user-first experiences.</p>
-        </div>
-      ))}
-
-      {[
-        "Design Systems",
-        "Usability Testing",
-        "UX Research",
-        "Wireframing",
-        "Prototyping",
-        "Interaction Design",
-        "Visual Design"
-      ].map((text, i) => (
-        <div key={"dup"+i} className="glowCard">
-          <h3>{text}</h3>
-          <p>Crafting clean, modern, user-first experiences.</p>
-        </div>
-      ))}
-
-    </div>
-  </div>
-</section>
-          </div>
-          <p className="muted" style={{ maxWidth: 420 }}>Projects are framed with problem, solution, impact, and live Figma links so recruiters can quickly judge UX depth.</p>
-        </div>
-
-        <div className="projectGrid">
-          {projects.map((project) => (
-            <article key={project.id} className="glass projectCard">
-              <div className="projectImg">
-                <SafeImage src={project.images[0]} alt={project.title} />
-                <div className="shade" />
-                <div className="projectTitle">
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "rgba(255,255,255,.7)", fontSize: 14 }}><span>{project.id}</span><span>{project.type}</span></div>
-                  <h3>{project.title}</h3>
+            {/* right — profile card */}
+            <Reveal dir="right" delay={0.15}>
+              <div style={{ position: "relative", display: "flex", justifyContent: "center" }}>
+                <div style={{ position: "absolute", inset: -30, background: "radial-gradient(circle,rgba(139,92,246,0.2),transparent 70%)", borderRadius: "50%", filter: "blur(40px)" }} />
+                <div className="glass" style={{ borderRadius: 28, overflow: "hidden", maxWidth: 380, width: "100%", position: "relative" }}>
+                  <img src={IMAGE_URLS.profile} alt="Gowtham B" style={{ width: "100%", aspectRatio: "4/5", objectFit: "cover", objectPosition: "top" }} onError={e => { e.currentTarget.style.background = "#1a1b2e"; e.currentTarget.src = "https://dummyimage.com/380x475/1a1b2e/8b5cf6&text=Gowtham+B"; }} />
+                  <div style={{ padding: "20px 24px 24px", background: "linear-gradient(0deg,rgba(6,7,14,0.95),rgba(6,7,14,0.6))" }}>
+                    <div className="kicker" style={{ marginBottom: 6 }}>AI Product Designer</div>
+                    <div style={{ fontSize: 18, fontWeight: 700 }}>Gowtham B</div>
+                    <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      {["Figma", "Claude", "Midjourney", "Hotjar"].map(t => (
+                        <span key={t} style={{ fontSize: 11, padding: "4px 10px", borderRadius: 999, background: "rgba(139,92,246,0.2)", border: "1px solid rgba(139,92,246,0.4)", color: "#c4b5fd" }}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                {/* floating badge */}
+                <div className="glass" style={{ position: "absolute", bottom: -8, left: -8, borderRadius: 16, padding: "12px 16px", display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 24 }}>🏆</span>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>5+ Case Studies</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>End-to-end UX delivered</div>
+                  </div>
                 </div>
               </div>
-              <p className="muted" style={{ marginTop: 18 }}>{project.desc}</p>
-              <div className="tags">{project.tags.map((tag) => <span className="tag" key={tag}>{tag}</span>)}</div>
-              <div className="three">
-                <div><p className="miniTitle" style={{ color: "#ff9a9a" }}>Problem</p><p className="muted">{project.problem}</p></div>
-                <div><p className="miniTitle" style={{ color: "#ffd166" }}>Solution</p><p className="muted">{project.solution}</p></div>
-                <div><p className="miniTitle" style={{ color: "#86efac" }}>Impact</p><p className="muted">{project.impact}</p></div>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* scroll indicator */}
+        <div style={{ position: "absolute", bottom: 32, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, opacity: 0.5 }}>
+          <div style={{ width: 1, height: 48, background: "linear-gradient(#8b5cf6,transparent)", animation: "pulse 2s ease-in-out infinite" }} />
+          <span style={{ fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase" }}>scroll</span>
+        </div>
+        <style>{`@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}`}</style>
+      </section>
+
+      {/* ═══════════════════════════ WORK / PROJECTS ═══════════════════════ */}
+      <section id="work" className="sec" style={{ position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(139,92,246,0.5),transparent)" }} />
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 12 }}>Case Studies</p>
+            <h2 style={{ fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 60 }}>
+              Designing with intention,<br /><span style={{ color: "rgba(255,255,255,0.35)" }}>not just instinct.</span>
+            </h2>
+          </Reveal>
+
+          {/* project tabs */}
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 40 }}>
+            {PROJECTS.map(p => (
+              <button key={p.id} onClick={() => setActiveProject(p)}
+                style={{ padding: "10px 22px", borderRadius: 999, fontSize: 14, fontWeight: 600, transition: "all 0.3s", background: activeProject.id === p.id ? `rgba(${p.accentRgb},0.25)` : "rgba(255,255,255,0.06)", border: `1px solid ${activeProject.id === p.id ? `rgba(${p.accentRgb},0.7)` : "rgba(255,255,255,0.12)"}`, color: activeProject.id === p.id ? "#fff" : "rgba(255,255,255,0.6)" }}>
+                {p.title}
+              </button>
+            ))}
+          </div>
+
+          {/* active project */}
+          <div className="projGrid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40, alignItems: "start" }}>
+            <Reveal key={activeProject.id} delay={0}>
+              <div>
+                <div style={{ display: "inline-block", padding: "4px 14px", borderRadius: 999, fontSize: 12, background: `rgba(${activeProject.accentRgb},0.2)`, border: `1px solid rgba(${activeProject.accentRgb},0.4)`, color: "#fff", marginBottom: 20 }}>{activeProject.type}</div>
+                <h3 style={{ fontSize: "clamp(1.8rem,3vw,2.8rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 16 }}>{activeProject.title}</h3>
+                <p style={{ fontSize: 16, lineHeight: 1.8, color: "rgba(255,255,255,0.65)", marginBottom: 28 }}>{activeProject.desc}</p>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 32 }}>
+                  {activeProject.tags.map(t => <span key={t} style={{ fontSize: 12, padding: "5px 12px", borderRadius: 999, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.7)" }}>{t}</span>)}
+                </div>
+                <div style={{ display: "grid", gap: 12, marginBottom: 32 }}>
+                  {[["🎯 Problem", activeProject.problem, "#ff6b6b"], ["💡 Solution", activeProject.solution, "#ffd166"], ["✅ Impact", activeProject.impact, "#86efac"]].map(([label, text, col]) => (
+                    <div key={label} className="glass" style={{ padding: "16px 20px", borderRadius: 16, borderLeft: `3px solid ${col}` }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: col, marginBottom: 6 }}>{label}</div>
+                      <p style={{ fontSize: 14, lineHeight: 1.7, color: "rgba(255,255,255,0.7)" }}>{text}</p>
+                    </div>
+                  ))}
+                </div>
+                {activeProject.figma !== "#" && (
+                  <a href={activeProject.figma} target="_blank" rel="noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 24px", borderRadius: 999, background: `rgba(${activeProject.accentRgb},0.2)`, border: `1px solid rgba(${activeProject.accentRgb},0.5)`, color: "#fff", fontWeight: 600, fontSize: 14 }}>
+                    <svg width="18" height="18" viewBox="0 0 38 57" fill="none"><path d="M19 28.5A9.5 9.5 0 1 1 28.5 19H19v9.5z" fill="#1ABCFE"/><path d="M9.5 47.5a9.5 9.5 0 0 1 9.5-9.5v9.5a9.5 9.5 0 0 1-9.5 9.5 9.5 9.5 0 0 1 0-19z" fill="#0ACF83"/><path d="M19 0h-9.5a9.5 9.5 0 0 0 0 19H19V0z" fill="#FF7262"/><path d="M28.5 0H19v19h9.5a9.5 9.5 0 0 0 0-19z" fill="#F24E1E"/><path d="M19 19h9.5a9.5 9.5 0 0 1 0 19H19V19z" fill="#A259FF"/></svg>
+                    View in Figma ↗
+                  </a>
+                )}
               </div>
-              <div className="actions">
-                <button type="button" onClick={() => setSelected(project)} className="btn btnPrimary">Preview Screens</button>
-                <a href={project.figma} target="_blank" rel="noreferrer" className="btn">Open Figma</a>
-              </div>
-            </article>
-          ))}
+            </Reveal>
+            <Reveal delay={0.15} dir="right">
+              <ImageCarousel images={activeProject.images} accent={activeProject.accentRgb} />
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      <section id="screens" className="section reveal" style={{ background: "rgba(255,255,255,.03)" }}>
-        <div className="container">
-          <p className="kicker">Interactive Screens</p>
-          <h2 className="headline">Hover. Switch. Explore.</h2>
-          <div className="actions">
-            {projects.map((p) => <button type="button" key={p.title} onClick={() => setSelected(p)} className={selected.title === p.title ? "btn btnPrimary" : "btn"}>{p.title}</button>)}
+      {/* ═══════════════════════════ PRODUCT DESIGN (3D) ═══════════════════ */}
+      <section id="products" className="sec" style={{ background: "rgba(255,255,255,0.02)", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(59,130,246,0.5),transparent)" }} />
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 12 }}>Product Design</p>
+            <h2 style={{ fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 12 }}>Urban Gear — Packaging & Catalog</h2>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginBottom: 48 }}>Full product packaging design for Urban Gear's lifestyle lineup — mug boxes, bottle catalogs, speaker sheets, and bag catalogs. Drag to rotate.</p>
+          </Reveal>
+
+          {/* product selector */}
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 36 }}>
+            {PRODUCT_CARDS.map((p, i) => (
+              <button key={p.label} onClick={() => setActiveProduct(i)}
+                style={{ padding: "10px 20px", borderRadius: 999, fontSize: 13, fontWeight: 600, transition: "all 0.3s", background: activeProduct === i ? `rgba(139,92,246,0.25)` : "rgba(255,255,255,0.06)", border: `1px solid ${activeProduct === i ? "rgba(139,92,246,0.7)" : "rgba(255,255,255,0.12)"}`, color: activeProduct === i ? "#fff" : "rgba(255,255,255,0.6)" }}>
+                {p.label}
+              </button>
+            ))}
           </div>
 
-          <div className="screensGrid" style={{ marginTop: 34 }}>
-            <div className="glass infoCard">
-              <p className="kicker">{selected.type}</p>
-              <h2 className="headline">{selected.title}</h2>
-              <p className="muted" style={{ marginTop: 12 }}>{selected.desc}</p>
-              <div style={{ display: "grid", gap: 14, marginTop: 24 }}>
-                <div className="glass" style={{ padding: 18, borderRadius: 20 }}><b style={{ color: "#ff9a9a" }}>Problem</b><p className="muted">{selected.problem}</p></div>
-                <div className="glass" style={{ padding: 18, borderRadius: 20 }}><b style={{ color: "#ffd166" }}>Solution</b><p className="muted">{selected.solution}</p></div>
-                <div className="glass" style={{ padding: 18, borderRadius: 20 }}><b style={{ color: "#86efac" }}>Impact</b><p className="muted">{selected.impact}</p></div>
+          <div className="productGrid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 28 }}>
+            {/* 3D viewer — spans 2 cols */}
+            <div style={{ gridColumn: "span 2" }}>
+              <Reveal>
+                <div className="glass product3d" style={{ borderRadius: 24, padding: 16, height: 420 }}>
+                 <Product3DViewer
+  modelPath={PRODUCT_CARDS[activeProduct].model}
+/>
+                </div>
+              </Reveal>
+            </div>
+            {/* info panel */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Reveal delay={0.1} dir="right">
+                <div className="glass" style={{ borderRadius: 20, padding: 24, flexGrow: 1 }}>
+                  <div className="kicker" style={{ marginBottom: 12 }}>Urban Gear®</div>
+                  <h3 style={{ fontSize: "1.4rem", fontWeight: 800, marginBottom: 8 }}>{PRODUCT_CARDS[activeProduct].label}</h3>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.7, marginBottom: 20 }}>{PRODUCT_CARDS[activeProduct].desc}</p>
+                  <div style={{ display: "grid", gap: 10 }}>
+                    {[["300 GSM", "Premium Paper Board"], ["Matte", "Lamination"], ["CMYK", "4-Color Printing"], ["Spot UV", "Embossing Finish"]].map(([v, l]) => (
+                      <div key={l} style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", borderRadius: 10, background: "rgba(255,255,255,0.06)" }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#c4b5fd" }}>{v}</span>
+                        <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{l}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
+              <Reveal delay={0.2} dir="right">
+                <div className="glass" style={{ borderRadius: 20, padding: 16, display: "flex", gap: 10, alignItems: "center" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg,#8b5cf6,#3b82f6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>📦</div>
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>Full Dieline Delivered</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>Print-ready, all sides</div>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+
+          {/* product thumbnails strip */}
+          <Reveal delay={0.2}>
+            <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: 14 }}>
+              {[
+                { label: "Mug Package", src: PRODUCT_CARDS[0].src },
+                { label: "Flipper Catalog", src: PRODUCT_CARDS[1].src },
+                { label: "Meal Pro", src: PRODUCT_CARDS[2].src },
+                { label: "Tango Speaker", src: PRODUCT_CARDS[3].src },
+              ].map(({ label, src }) => (
+                <div key={label} className="glass" style={{ borderRadius: 14, overflow: "hidden", transition: "transform 0.3s,box-shadow 0.3s" }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(139,92,246,0.3)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}>
+                  <img src={src} alt={label} style={{ width: "100%", height: 110, objectFit: "cover" }} onError={e => { e.currentTarget.src = `https://dummyimage.com/320x220/111/fff&text=${encodeURIComponent(label)}`; }} />
+                  <div style={{ padding: "10px 12px", fontSize: 12, color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════ GRAPHIC DESIGN ═════════════════════════ */}
+      <section className="sec" style={{ paddingBottom: 80 }}>
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 12 }}>Graphic Design</p>
+            <h2 style={{ fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 40 }}>Posters & Visual Identity</h2>
+          </Reveal>
+        </div>
+        <div className="pTrain">
+          <div className="pTrack">
+            {[...IMAGE_URLS.graphicDesign, ...IMAGE_URLS.graphicDesign].map((img, i) => (
+              <button key={i} className="pCard" onClick={() => setPosterPreview(img)}>
+                <img src={img} alt="Design" onError={e => { e.currentTarget.src = "https://dummyimage.com/180x240/1a1a2e/fff&text=Design"; }} />
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {posterPreview && (
+        <div onClick={() => setPosterPreview(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.88)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, backdropFilter: "blur(12px)" }}>
+          <div onClick={e => e.stopPropagation()} style={{ position: "relative", maxWidth: 720, width: "100%", borderRadius: 20, overflow: "hidden", boxShadow: "0 0 80px rgba(139,92,246,0.4)" }}>
+            <button onClick={() => setPosterPreview(null)} style={{ position: "absolute", top: 14, right: 14, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.7)", color: "#fff", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2 }}>×</button>
+            <img src={posterPreview} alt="Preview" style={{ width: "100%", display: "block" }} />
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════ SKILLS ════════════════════════════════ */}
+      <section className="sec" style={{ background: "rgba(255,255,255,0.015)", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(251,191,36,0.4),transparent)" }} />
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 12 }}>Capabilities</p>
+            <h2 style={{ fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 48 }}>Built to think, research,<br /><span style={{ color: "rgba(255,255,255,0.35)" }}>and ship.</span></h2>
+          </Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 20 }}>
+            {SKILLS.map(({ cat, items }, ci) => (
+              <Reveal key={cat} delay={ci * 0.08}>
+                <div className="glass" style={{ borderRadius: 20, padding: "24px 22px", height: "100%" }}>
+                  <div className="kicker" style={{ marginBottom: 16, color: ["#c4b5fd", "#93c5fd", "#6ee7b7", "#fde68a"][ci] }}>{cat}</div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {items.map(s => <span key={s} className="skillPill">{s}</span>)}
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+
+          {/* process strip */}
+          <Reveal delay={0.1}>
+            <div style={{ marginTop: 56 }}>
+              <p className="kicker" style={{ marginBottom: 24 }}>My Process</p>
+              <div style={{ display: "flex", gap: 0, overflowX: "auto", paddingBottom: 8 }}>
+                {[["01 Discover", "Interviews, heuristics, and competitive research to surface real pain points."],
+                  ["02 Define", "Personas, journey maps, and problem statements distilled from research."],
+                  ["03 Ideate", "Sketches, concept exploration, and feature prioritisation."],
+                  ["04 Prototype", "From lo-fi wireframes to high-fidelity Figma systems."],
+                  ["05 Test", "Usability sessions, A/B tests, accessibility audits, and iteration."]].map(([title, desc], i, arr) => (
+                    <div key={title} style={{ flex: "1 0 200px", padding: "24px 20px", background: `rgba(139,92,246,${0.04 + i * 0.03})`, borderTop: `3px solid rgba(139,92,246,${0.2 + i * 0.15})`, position: "relative" }}>
+                      <div style={{ fontSize: 11, fontWeight: 800, color: "#8b5cf6", letterSpacing: "0.15em", marginBottom: 8 }}>{title}</div>
+                      <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.65 }}>{desc}</p>
+                      {i < arr.length - 1 && <span style={{ position: "absolute", right: -10, top: "50%", transform: "translateY(-50%)", fontSize: 18, color: "rgba(255,255,255,0.2)", zIndex: 1 }}>→</span>}
+                    </div>
+                  ))}
               </div>
             </div>
-            <ImageStack project={selected} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════ ABOUT ══════════════════════════════════ */}
+      <section id="about" className="sec">
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 48 }}>About Me</p>
+          </Reveal>
+          <div className="aboutGrid" style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr", gap: 40, alignItems: "start" }}>
+            <Reveal dir="left">
+              <div className="glass" style={{ borderRadius: 24, overflow: "hidden" }}>
+                <img src={IMAGE_URLS.standing} alt="Gowtham B" style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", objectPosition: "top" }} onError={e => { e.currentTarget.src = "https://dummyimage.com/400x533/1a1b2e/8b5cf6&text=Gowtham"; }} />
+              </div>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <div style={{ display: "grid", gap: 16 }}>
+                <div className="glass" style={{ borderRadius: 20, padding: 28 }}>
+                  <h3 style={{ fontSize: "1.6rem", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 16, lineHeight: 1.3 }}>Designing digital products that earn trust and reduce friction.</h3>
+                  <p style={{ fontSize: 15, lineHeight: 1.85, color: "rgba(255,255,255,0.65)" }}>I'm an AI Product Designer and UI/UX Designer based in Bengaluru. My background spans design operations at Wipro — where I reduced training queries by 30% — to gamified learning experiences at Unacademy.</p>
+                  <p style={{ fontSize: 15, lineHeight: 1.85, color: "rgba(255,255,255,0.65)", marginTop: 12 }}>I bring an operational lens to design: I think about workflows, edge cases, documentation, and the moment something breaks. That makes my products practical, not just pretty.</p>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {[["📍", "Bengaluru, India"], ["🎓", "M.UX — Zero Schools, 2025"], ["💼", "UI/UX Designer @ Unacademy"], ["🌐", PORTFOLIO]].map(([icon, text]) => (
+                    <div key={text} className="glass" style={{ borderRadius: 16, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                      <span style={{ fontSize: 20 }}>{icon}</span>
+                      <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{text}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="glass" style={{ borderRadius: 20, overflow: "hidden" }}>
+                  <img src={IMAGE_URLS.sunset} alt="mood" style={{ width: "100%", height: 180, objectFit: "cover" }} onError={e => { e.currentTarget.style.display = "none"; }} />
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <div className="container" style={{ marginTop:80}}>
-
-</div>
-
-<div className="trainWrap"></div>
-
-      <section id="process" className="container section reveal">
-        {/* ===== Graphic Design Projects ===== */}
-<section className="container section reveal">
-  <p className="kicker">Graphic Design Projects</p>
-  <h2 className="headline">Posters & Visual Designs</h2>
-
-  <div className="posterTrain">
-    <div className="posterTrack">
-      {[...IMAGE_URLS.graphicDesign, ...IMAGE_URLS.graphicDesign].map((img, i) => (
-        <button
-          key={i}
-          className="posterCard"
-          onClick={() => setPosterPreview(img)}
-        >
-          <img src={img} alt="Poster" />
-        </button>
-      ))}
-    </div>
-  </div>
-
-  {posterPreview && (
-    <div className="posterModal" onClick={() => setPosterPreview(null)}>
-      <div className="previewBox" onClick={(e) => e.stopPropagation()}>
-        <button className="closeBtn" onClick={() => setPosterPreview(null)}>×</button>
-        <img src={posterPreview} />
-      </div>
-    </div>
-  )}
-</section>
-        <p className="kicker">My Process</p>
-        <h2 className="headline">I design with structure, not guesswork.</h2>
-        <div className="processGrid">
-          {process.map(([step, title, text]) => <div key={step} className="glass processCard"><p style={{ color: "#ffd166" }}>{step}</p><h3 style={{ fontSize: 30, marginTop: 28 }}>{title}</h3><p className="muted">{text}</p></div>)}
-        </div>
-      </section>
-
-      <section id="about" className="container section reveal">
-        <div className="aboutGrid">
-          <div className="glass" style={{ padding: 16, borderRadius: 32 }}><SafeImage src={IMAGE_URLS.standing} alt="Gowtham standing portrait" className="portrait" /></div>
-          <div style={{ display: "grid", gap: 24 }}>
-            <div className="glass" style={{ padding: 34, borderRadius: 32 }}><p className="kicker">About Me</p><h2 className="headline">Designer with process discipline.</h2><p className="muted" style={{ marginTop: 12 }}>My background in operations helps me understand workflows, accuracy, documentation, and user friction. I bring that thinking into UI/UX design to create practical, usable, and business-friendly digital products.</p></div>
-            <div className="glass" style={{ padding: 16, borderRadius: 32 }}><SafeImage src={IMAGE_URLS.sunset} alt="Creative personal mood" className="mood" /></div>
+      {/* ═══════════════════════════ EXPERIENCE ═════════════════════════════ */}
+      <section id="experience" className="sec" style={{ background: "rgba(255,255,255,0.02)", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(139,92,246,0.4),transparent)" }} />
+        <div className="con">
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 12 }}>Experience</p>
+            <h2 style={{ fontSize: "clamp(2rem,4vw,3.2rem)", fontWeight: 900, letterSpacing: "-0.04em", marginBottom: 48 }}>Product mindset with<br /><span style={{ color: "rgba(255,255,255,0.35)" }}>real workplace discipline.</span></h2>
+          </Reveal>
+          <div className="expGrid" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
+            <Reveal dir="left">
+              <div style={{ display: "grid", gap: 14, position: "sticky", top: 100 }}>
+                {[["Unacademy", "Jan 2025 – Present", "#f97316"], ["Wipro Technologies", "2024 – 2025", "#3b82f6"], ["Zero Schools", "2025", "#8b5cf6"]].map(([co, dates, col]) => (
+                  <div key={co} className="glass" style={{ borderRadius: 16, padding: "16px 18px", borderLeft: `3px solid ${col}` }}>
+                    <div style={{ fontWeight: 700, fontSize: 14 }}>{co}</div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>{dates}</div>
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+            <div style={{ display: "grid", gap: 20 }}>
+              {[{
+                logo: IMAGE_URLS.unacademy, co: "Unacademy", role: "UI/UX Designer", dates: "Jan 2025 – Present", accent: "#f97316",
+                bullets: ["Designed gamified learning experiences for competitive exam prep platforms.", "Created onboarding flows, AI-assisted interfaces, quizzes, and activity-based learning modules.", "Developed user flows, wireframes, high-fidelity UI designs, and interactive Figma prototypes.", "Improved usability, accessibility, and learner engagement across app experiences.", "Collaborated with PMs, developers, and stakeholders to deliver user-centred solutions."],
+              }, {
+                logo: IMAGE_URLS.wipro, co: "Wipro Technologies", role: "UX / Design Operations Specialist", dates: "2024 – 2025", accent: "#3b82f6",
+                bullets: ["Analysed workflow bottlenecks and usability issues across enterprise applications.", "Redesigned task flows to reduce operational friction and improve efficiency.", "Delivered UX recommendations based on workflow analysis and stakeholder feedback.", "Reduced training-related support queries by 30% through improved experience design."],
+              }].map(({ logo, co, role, dates, accent, bullets }) => (
+                <Reveal key={co}>
+                  <div className="glass" style={{ borderRadius: 20, padding: 28, borderLeft: `3px solid ${accent}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 20 }}>
+                      <div>
+                        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginBottom: 4 }}>{dates}</div>
+                        <div style={{ fontWeight: 800, fontSize: 18 }}>{role}</div>
+                        <div style={{ fontSize: 14, color: accent, fontWeight: 600, marginTop: 2 }}>{co}</div>
+                      </div>
+                      <img src={logo} alt={co} style={{ height: 32, objectFit: "contain", filter: "brightness(1.2)" }} onError={e => { e.currentTarget.style.display = "none"; }} />
+                    </div>
+                    <ul style={{ paddingLeft: 18, display: "grid", gap: 8 }}>
+                      {bullets.map(b => <li key={b} style={{ fontSize: 14, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }}>{b}</li>)}
+                    </ul>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="experience" className="section reveal" style={{ background: "rgba(255,255,255,.03)" }}>
-        <div className="container experienceGrid">
-          <div><p className="kicker">Experience</p><h2 className="headline">Product mindset with real workplace discipline.</h2></div>
-          <div style={{ display: "grid", gap: 20 }}>
-            <div className="glass expCard"><div className="expTop"><div className="expName"><SafeImage src={IMAGE_URLS.unacademy} alt="Unacademy" className="companyLogo" /><h3>UI/UX Design Intern — Unacademy</h3></div><p className="muted">2026 – Present</p></div><p className="muted" style={{ marginTop: 12 }}>Designed interfaces for web and mobile products, conducted usability testing, collaborated with product managers and developers, and worked on reusable design system components.</p></div>
-            <div className="glass expCard"><div className="expTop"><div className="expName"><SafeImage src={IMAGE_URLS.wipro} alt="Wipro" className="companyLogo" /><h3>Process Associate — Wipro Technologies</h3></div><p className="muted">Jan 2024 – Dec 2025</p></div><p className="muted" style={{ marginTop: 12 }}>Analysed internal systems, identified usability issues, improved workflows, created task flows and UX recommendations, and reduced training queries by 30%.</p></div>
-            <div className="glass expCard"><div className="expName"><SafeImage src={IMAGE_URLS.zero} alt="Zero Schools" className="companyLogo" /><h3>UI/UX Certification — Zero Schools</h3></div><p className="muted" style={{ marginTop: 12 }}>Focused on UI design, UX design, user research, prototyping, information architecture, accessibility, responsive design, and usability testing.</p></div>
-          </div>
+      {/* ═══════════════════════════ CONTACT ════════════════════════════════ */}
+      <footer id="contact" className="sec" style={{ textAlign: "center", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(251,191,36,0.5),transparent)" }} />
+        <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 600, height: 400, background: "radial-gradient(ellipse,rgba(139,92,246,0.2),transparent 70%)", filter: "blur(60px)", pointerEvents: "none" }} />
+        <div className="con" style={{ position: "relative", zIndex: 2 }}>
+          <Reveal>
+            <p className="kicker" style={{ marginBottom: 20 }}>Available for UI/UX & Product roles</p>
+            <h2 style={{ fontSize: "clamp(2rem,5vw,4rem)", fontWeight: 900, letterSpacing: "-0.05em", marginBottom: 20, lineHeight: 1.1 }}>
+              Let's build intelligent,<br />user-centred products<br /><span style={{ background: "linear-gradient(135deg,#8b5cf6,#3b82f6)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>together.</span>
+            </h2>
+            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", maxWidth: 500, margin: "0 auto 48px" }}>Open to full-time opportunities, freelance projects, and design collaborations.</p>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center", marginBottom: 56 }}>
+              <a href={`mailto:${EMAIL}`} style={{ padding: "14px 28px", borderRadius: 999, background: "linear-gradient(135deg,#8b5cf6,#6366f1)", color: "#fff", fontWeight: 700, fontSize: 15, boxShadow: "0 8px 32px rgba(139,92,246,0.45)" }}>{EMAIL}</a>
+              <a href={`tel:${PHONE}`} style={{ padding: "14px 24px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 15 }}>{PHONE}</a>
+              <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" style={{ padding: "14px 24px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 15 }}>LinkedIn ↗</a>
+              <a href={RESUME_URL} target="_blank" rel="noreferrer" style={{ padding: "14px 24px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.85)", fontWeight: 600, fontSize: 15 }}>Download Resume ↗</a>
+            </div>
+          </Reveal>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>© 2026 Gowtham B — AI Product Designer & UI/UX Designer · Bengaluru, India</p>
         </div>
-      </section>
-
-      <footer id="contact" className="reveal">
-        <p className="kicker">Available for UI/UX roles</p>
-        <h2 className="headline">Let’s build meaningful digital experiences together.</h2>
-        <div className="actions" style={{ justifyContent: "center" }}>
-          <a href={`mailto:${EMAIL}`} className="btn btnPrimary">{EMAIL}</a>
-          <a href={`tel:${PHONE}`} className="btn">{PHONE}</a>
-          <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="btn">LinkedIn</a>
-          <a href={RESUME_URL} target="_blank" rel="noreferrer" className="btn">Download Resume</a>
-        </div>
-        <p className="muted" style={{ marginTop: 46 }}>© 2026 Gowtham B — UI/UX & Product Designer Portfolio</p>
       </footer>
-    </main>
+    </>
   );
 }
