@@ -36,11 +36,12 @@ const IMAGE_URLS = {
     "https://i.postimg.cc/QM1YkVQj/img-6.png"
   ],
   instagrocery: [
-    "https://i.postimg.cc/XvjVczDC/Case-study.png",
-    "https://i.postimg.cc/zGSzhr77/1.png",
-    "https://i.postimg.cc/x1yfm2g9/2.png",
-    "https://i.postimg.cc/6pLWZXz6/3.png",
-    "https://i.postimg.cc/sg9jWrKj/4.png",
+    "https://i.postimg.cc/sX9S3GWN/img-1.png",
+    "https://i.postimg.cc/0jkSj5dR/img-2.png",
+    "https://i.postimg.cc/brmttX3N/img-3.png",
+    "https://i.postimg.cc/yxLZZqv6/img-4.png",
+    "https://i.postimg.cc/prsFFNqr/img-5.png",
+    "https://i.postimg.cc/1XvqqxJr/img-6.png",
   ],
   urban: [
     "https://i.postimg.cc/cJVSCRb8/Page1.png",
