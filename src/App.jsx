@@ -44,10 +44,13 @@ const IMAGE_URLS = {
     "https://i.postimg.cc/1XvqqxJr/img-6.png",
   ],
   urban: [
-    "https://i.postimg.cc/cJVSCRb8/Page1.png",
-    "https://i.postimg.cc/NMmwHK35/Page2.png",
-    "https://i.postimg.cc/5tZVyBRz/Low-fidelity.png",
-    "https://i.postimg.cc/9fvh0dN6/Frame-1.png",
+    "https://i.postimg.cc/66bVqRSg/img-1.png",
+    "https://i.postimg.cc/xjpG8HhQ/img-2.png",
+    "https://i.postimg.cc/qBDcqnSJ/img-3.png",
+    "https://i.postimg.cc/G3gPtYVw/img-4.png",
+    "https://i.postimg.cc/QNYgC5w3/img-5.png",
+    "https://i.postimg.cc/65DdLKBq/img-6.png",
+    "https://i.postimg.cc/sDBYhxCp/img-7.png",
   ],
   graphicDesign: [
     "https://i.postimg.cc/W1HPcjDM/1-1.png",
