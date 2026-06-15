@@ -22,12 +22,10 @@ const IMAGE_URLS = {
   wipro: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg",
   unacademy: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Unacademy_Logo.png",
   booking: [
-    "https://i.postimg.cc/rp7rp497/page1.png",
-    "https://i.postimg.cc/3RpD0wSJ/page2.png",
-    "https://i.postimg.cc/XJFyBvHd/page3.png",
-    "https://i.postimg.cc/tTPVngSs/page2-1.png",
-    "https://i.postimg.cc/qRnC67bc/page5.png",
-    "https://i.postimg.cc/NMTr20Jx/page6.png",
+    "https://cdn.corenexis.com/f/yBWoTyHok8o.png",
+    "https://cdn.corenexis.com/f/GYNLS0Io0RE.png",
+    "https://cdn.corenexis.com/f/ezk42yI4NEU.png",
+    "https://cdn.corenexis.com/f/Sp47GF6Zwk1.png",
   ],
   neithal: [
     "https://i.postimg.cc/bvJGgrs3/Screenshot-2026-05-05-233117.png",
