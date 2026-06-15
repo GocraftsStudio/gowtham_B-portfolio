@@ -28,10 +28,12 @@ const IMAGE_URLS = {
     "https://cdn.corenexis.com/f/Sp47GF6Zwk1.png",
   ],
   neithal: [
-    "https://i.postimg.cc/bvJGgrs3/Screenshot-2026-05-05-233117.png",
-    "https://i.postimg.cc/cJTpsS5Z/neithal2-png.png",
-    "https://i.postimg.cc/q7QPkTZT/neithal3-png.png",
-    "https://i.postimg.cc/7LXFxkQv/neithal4-png.png",
+    "https://i.postimg.cc/NjWPHRrH/img-1.png",
+    "https://i.postimg.cc/Gh4QxHRV/img-2.png",
+    "https://i.postimg.cc/t4LmxFx0/img-3.png",
+    "https://i.postimg.cc/HLXv4jwr/img-4.png",
+    "https://i.postimg.cc/PqYVzNWr/img-5.png",
+    "https://i.postimg.cc/QM1YkVQj/img-6.png"
   ],
   instagrocery: [
     "https://i.postimg.cc/XvjVczDC/Case-study.png",
