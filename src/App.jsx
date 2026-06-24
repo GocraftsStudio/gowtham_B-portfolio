@@ -259,7 +259,6 @@ function Product3DViewer({ modelPath }) {
         <Model path={modelPath} />
 
         <OrbitControls
-          enableZoom
           autoRotate
           autoRotateSpeed={2}
         />
