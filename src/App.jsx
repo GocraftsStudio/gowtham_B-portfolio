@@ -774,7 +774,7 @@ const PRODUCT_CARDS = [
                   <p style={{ fontSize: 15, lineHeight: 1.85, color: "rgba(255,255,255,0.65)", marginTop: 12 }}>I bring an operational lens to design: I think about workflows, edge cases, documentation, and the moment something breaks. That makes my products practical, not just pretty.</p>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {[["📍", "Bengaluru, India"], ["🎓", "M.UX — Zero Schools, 2025"], ["💼", "UI/UX Designer @ Unacademy"], ["🌐", PORTFOLIO]].map(([icon, text]) => (
+                  {[["📍", "Bengaluru, India"], ["🎓", "M.UX — Zero Schools, 2023"], ["💼", "UI/UX Designer @ Unacademy"], ["🌐", PORTFOLIO]].map(([icon, text]) => (
                     <div key={text} className="glass" style={{ borderRadius: 16, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
                       <span style={{ fontSize: 20 }}>{icon}</span>
                       <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{text}</span>
@@ -801,7 +801,7 @@ const PRODUCT_CARDS = [
           <div className="expGrid" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
             <Reveal dir="left">
               <div style={{ display: "grid", gap: 14, position: "sticky", top: 100 }}>
-                {[["Unacademy", "Jan 2025 – Present", "#f97316"], ["Wipro Technologies", "2024 – 2025", "#3b82f6"], ["Zero Schools", "2025", "#8b5cf6"]].map(([co, dates, col]) => (
+                {[["Unacademy", "Jan 2026 – July 2026", "#f97316"], ["Wipro Technologies", "2024 – 2025", "#3b82f6"], ["Zero Schools", "2023", "#8b5cf6"]].map(([co, dates, col]) => (
                   <div key={co} className="glass" style={{ borderRadius: 16, padding: "16px 18px", borderLeft: `3px solid ${col}` }}>
                     <div style={{ fontWeight: 700, fontSize: 14 }}>{co}</div>
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>{dates}</div>
@@ -811,10 +811,10 @@ const PRODUCT_CARDS = [
             </Reveal>
             <div style={{ display: "grid", gap: 20 }}>
               {[{
-                logo: IMAGE_URLS.unacademy, co: "Unacademy", role: "UI/UX Designer", dates: "Jan 2025 – Present", accent: "#f97316",
+                logo: IMAGE_URLS.unacademy, co: "Unacademy", role: "UI/UX Designer", dates: "Jan 2026 – June 2026", accent: "#f97316",
                 bullets: ["Designed gamified learning experiences for competitive exam prep platforms.", "Created onboarding flows, AI-assisted interfaces, quizzes, and activity-based learning modules.", "Developed user flows, wireframes, high-fidelity UI designs, and interactive Figma prototypes.", "Improved usability, accessibility, and learner engagement across app experiences.", "Collaborated with PMs, developers, and stakeholders to deliver user-centred solutions."],
               }, {
-                logo: IMAGE_URLS.wipro, co: "Wipro Technologies", role: "UX / Design Operations Specialist", dates: "2024 – 2025", accent: "#3b82f6",
+                logo: IMAGE_URLS.wipro, co: "Wipro Technologies", role: "UI/UX, Design Operations Specialist", dates: "2024 – 2025", accent: "#3b82f6",
                 bullets: ["Analysed workflow bottlenecks and usability issues across enterprise applications.", "Redesigned task flows to reduce operational friction and improve efficiency.", "Delivered UX recommendations based on workflow analysis and stakeholder feedback.", "Reduced training-related support queries by 30% through improved experience design."],
               }].map(({ logo, co, role, dates, accent, bullets }) => (
                 <Reveal key={co}>
