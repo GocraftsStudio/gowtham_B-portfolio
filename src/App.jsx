@@ -9,7 +9,7 @@ import { OrbitControls, Environment, useGLTF } from "@react-three/drei";
    ============================================================ */
 
 /* ───── constants ───── */
-const RESUME_URL = "https://drive.google.com/file/d/1vj1I6q04I_Om-QxgMgzbRx_Tzi9hEKRA/view?usp=drive_link";
+const RESUME_URL = "https://drive.google.com/file/d/11Afcv2lSovB8rAvxIS9Jcz7zOKyx-SP7/view?usp=sharing";
 const LINKEDIN_URL = "http://www.linkedin.com/in/gowtham-boothal-84b672266";
 const EMAIL = "gowthamboothal22@gmail.com";
 const PHONE = "+916379148128";
