@@ -20,7 +20,9 @@ const IMAGE_URLS = {
   standing: "https://i.postimg.cc/YqZF4Bgb/IMG-20250824-WA0072-jpg.jpg",
   sunset: "https://i.postimg.cc/BQ65LCzq/sunset-jpg.jpg",
   wipro: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg",
-  unacademy: "https://upload.wikimedia.org/wikipedia/commons/8/8c/Unacademy_Logo.png",
+  unacademy: "https://i.postimg.cc/fy3CsWt3/downloadacademy.webp",
+ Urban Gear Gifts LLP: "https://i.postimg.cc/mkcj4Zzk/UG-colored-logo-png.png"
+   
   booking: [
     "https://cdn.corenexis.com/f/yBWoTyHok8o.png",
     "https://cdn.corenexis.com/f/GYNLS0Io0RE.png",
@@ -801,7 +803,7 @@ const PRODUCT_CARDS = [
           <div className="expGrid" style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 24 }}>
             <Reveal dir="left">
               <div style={{ display: "grid", gap: 14, position: "sticky", top: 100 }}>
-                {[["Unacademy", "Jan 2026 – July 2026", "#f97316"], ["Wipro Technologies", "2024 – 2025", "#3b82f6"], ["Zero Schools", "2023", "#8b5cf6"]].map(([co, dates, col]) => (
+                {[["Urban Gear Gifts LLP", "July 2026 – Present", "#f97316"], ["Unacademy", "Jan 2026 – June 2026", "#f97316"], ["Wipro Technologies", "2024 – 2025", "#3b82f6"], ["Zero Schools", "2023", "#8b5cf6"]].map(([co, dates, col]) => (
                   <div key={co} className="glass" style={{ borderRadius: 16, padding: "16px 18px", borderLeft: `3px solid ${col}` }}>
                     <div style={{ fontWeight: 700, fontSize: 14 }}>{co}</div>
                     <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>{dates}</div>
@@ -811,6 +813,13 @@ const PRODUCT_CARDS = [
             </Reveal>
             <div style={{ display: "grid", gap: 20 }}>
               {[{
+                logo: IMAGE_URLS.Urban Gear Gifts LLP, co: "Urban Gear Gifts LLP", role: "Product / UI/UX Designer", dates: "Jan 2026 – June 2026", accent: "#f97316",
+                bullets: [" Lead UI/UX, product, graphic, and digital design across internal platforms, website experiences, product catalogues, packaging, campaigns,
+and customer-facing assets.,", " Design user flows, wireframes, dashboards, responsive interfaces, interaction patterns, and reusable components for business applications.", " Design and develop the Urban Gear Command Centre, supporting CRM, dealer management, catalogues, campaigns, quotations, orders,
+billing, payments, shipment tracking, analytics, roles, and operational workflows.", "Create product catalogues, packaging, exhibition materials, promotional creatives, social media assets, product presentations, and product
+visualizations while maintaining brand consistency.", "Work on WhatsApp Business/API workflows including campaign management, templates, customer communication, CRM integration, and
+automation."],
+              }, {
                 logo: IMAGE_URLS.unacademy, co: "Unacademy", role: "UI/UX Designer", dates: "Jan 2026 – June 2026", accent: "#f97316",
                 bullets: ["Designed gamified learning experiences for competitive exam prep platforms.", "Created onboarding flows, AI-assisted interfaces, quizzes, and activity-based learning modules.", "Developed user flows, wireframes, high-fidelity UI designs, and interactive Figma prototypes.", "Improved usability, accessibility, and learner engagement across app experiences.", "Collaborated with PMs, developers, and stakeholders to deliver user-centred solutions."],
               }, {
