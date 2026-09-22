@@ -24,10 +24,11 @@ const IMAGE_URLS = {
   urbanGear: "https://i.postimg.cc/mkcj4Zzk/UG-colored-logo-png.png",
    
   booking: [
-    "https://cdn.corenexis.com/f/yBWoTyHok8o.png",
-    "https://cdn.corenexis.com/f/GYNLS0Io0RE.png",
-    "https://cdn.corenexis.com/f/ezk42yI4NEU.png",
-    "https://cdn.corenexis.com/f/Sp47GF6Zwk1.png",
+  "/projects/booking1.jpg.jpg",
+  "/projects/booking2.jpg.jpg",
+  "/projects/booking3.jpg.jpg",
+  "/projects/booking4.jpg.jpg",
+  "/projects/booking5.jpg.jpg",
   ],
   neithal: [
     "https://i.postimg.cc/NjWPHRrH/img-1.png",
